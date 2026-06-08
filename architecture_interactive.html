@@ -120,6 +120,9 @@
   Step1 -->|assigned to| AgentResearch[agent: research]
   Step2 -->|assigned to| AgentCoding[agent: coding]
   Step3 -->|assigned to| AgentTesting[agent: testing]
+  AgentResearch --> Providers
+  AgentCoding --> Providers
+  AgentTesting --> Providers
 
   UI -->|SSE / REST| API
   API --> AgentRunner
@@ -220,6 +223,9 @@
   步骤1 -->|分配给| 研究Agent[agent: research]
   步骤2 -->|分配给| 开发Agent[agent: coding]
   步骤3 -->|分配给| 测试Agent[agent: testing]
+  研究Agent --> 模型
+  开发Agent --> 模型
+  测试Agent --> 模型
 
   UI -->|SSE / REST| API
   API --> AgentRunner
