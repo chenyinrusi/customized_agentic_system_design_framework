@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Customized Agentic System — Architecture (Interactive)</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:20px}
+    header{display:flex;gap:12px;align-items:center}
+    #controls{margin-top:12px}
+    .diagram-wrap{border:1px solid #ddd;padding:12px;border-radius:6px;margin-top:12px}
+    button{margin-right:8px}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Customized Agentic System — Architecture</h2>
+    <div id="langNote" style="margin-left:8px;color:#666">(Toggle language below)</div>
+  </header>
+
+  <div id="controls">
+    <button id="btn-en">English</button>
+    <button id="btn-zh">中文</button>
+    <button id="btn-toggle-detail">Toggle Detail</button>
+    <button id="btn-download-svg" disabled>Download SVG</button>
+    <button id="btn-render">Re-render</button>
+  </div>
+
+  <div id="diagram" class="diagram-wrap">Rendering...</div>
+
+  <div style="margin-top:18px;color:#444;font-size:90%">
+    <strong>Usage:</strong> Click a language, then click <em>Re-render</em> (or it renders automatically). Use <em>Download SVG</em> to save the current diagram.
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({startOnLoad:false, theme: 'default'});
+
+    const diagrams = {
+      en: `flowchart LR
+  subgraph Frontend[Next.js Frontend]
+    UI[Chat Page / Model Selector / Toolbox]
+    AgentWorkspace[Agent Dashboard]
+  end
+
+  subgraph Backend[FastAPI Backend]
+    API["/api/* endpoints<br/>(chat, plan, agents, stats, memory)"]
+    AgentRunner[Agent Runner / Orchestrator]
+    Planner[Plan / Autopilot]
+    Tools["Tool Registry (17 tools)<br/>File / Git / Web / Memory / Sandbox"]
+    LLMAdapters[LLM Adapters & Fallback]
+    Memory[SharedMemoryManager]
+    Governance[Governor / Approval]
+    Observability[ToolCallLogger / StatsTracker / Tracer]
+    MultiAgent[MultiAgentSystem]
+  end
+
+  subgraph Providers[External & Local Models]
+    DeepSeek[DeepSeek API]
+    Gemini[Gemini / OpenAI]
+    Ollama[Ollama (local)]
+  end
+
+  UI -->|SSE / REST| API
+  AgentWorkspace -->|polling / REST| API
+  API --> AgentRunner
+  API --> Planner
+  AgentRunner --> MultiAgent
+  Planner --> AgentRunner
+  AgentRunner --> LLMAdapters
+  LLMAdapters --> Providers
+  AgentRunner --> Tools
+  Tools --> Memory
+  API --> Observability
+  AgentRunner --> Observability
+  API --> Governance
+  Governance --> Tools
+  Observability -->|logs/jsonl| Storage[(logs/ stats/ jsonl files)]
+  Memory -->|persist| Storage
+  Tools -->|file/git ops| Storage
+  MultiAgent --> AgentRunner
+
+  classDef infra fill:#f9f,stroke:#333,stroke-width:1;
+  class Providers infra
+  class Storage infra
+`,
+
+      en_detail: `flowchart LR
+  subgraph Frontend[Next.js Frontend]
+    UI[Chat Page / Model Selector / Toolbox]
+    AgentWorkspace[Agent Dashboard]
+  end
+
+  subgraph Backend[FastAPI Backend]
+    API["/api/* endpoints<br/>(chat, plan, agents, stats, memory)"]
+    AgentRunner[Agent Runner / Orchestrator]
+    Planner[Plan / Autopilot]
+    Tools["Tool Registry (17 tools)<br/>File / Git / Web / Memory / Sandbox"]
+    LLMAdapters[LLM Adapters & Fallback]
+    Memory[SharedMemoryManager]
+    Governance[Governor / Approval]
+    Observability[ToolCallLogger / StatsTracker / Tracer]
+    MultiAgent[MultiAgentSystem]
+  end
+
+  subgraph Providers[External & Local Models]
+    DeepSeek[DeepSeek API]
+    Gemini[Gemini / OpenAI]
+    Ollama[Ollama (local)]
+  end
+
+  subgraph Plan[Plan Decomposition]
+    Goal["User Goal:<br/>\"Build login system\""]
+    Goal --> Step1["Step 1: Research<br/>(model: deepseek-v4-flash)"]
+    Goal --> Step2["Step 2: Implement<br/>(model: gemini-2.5-flash)"]
+    Goal --> Step3["Step 3: Test & Verify<br/>(model: ollama/qwen2.5)"]
+  end
+
+  Step1 -->|assigned to| AgentResearch[agent: research]
+  Step2 -->|assigned to| AgentCoding[agent: coding]
+  Step3 -->|assigned to| AgentTesting[agent: testing]
+
+  UI -->|SSE / REST| API
+  API --> AgentRunner
+  AgentRunner --> MultiAgent
+  Planner --> AgentRunner
+  AgentRunner --> LLMAdapters
+  Step1 --> LLMAdapters
+  Step2 --> LLMAdapters
+  Step3 --> LLMAdapters
+  LLMAdapters --> DeepSeek
+  LLMAdapters --> Gemini
+  LLMAdapters --> Ollama
+
+  classDef infra fill:#f9f,stroke:#333,stroke-width:1;
+  class Providers infra
+  class Storage infra
+`,
+
+      zh: `flowchart LR
+  subgraph 前端[Next.js 前端]
+    UI[聊天页 / 模型选择 / 工具面板]
+    仪表盘[Agent 运维面板]
+  end
+
+  subgraph 后端[FastAPI 后端]
+    API["/api/* 路由<br/>(chat, plan, agents, stats, memory)"]
+    AgentRunner[Agent 运行器 / 协调器]
+    Planner[Plan / 自动驾驶（Autopilot）]
+    Tools["工具注册表（17 个工具）<br/>文件 / Git / Web / Memory / 沙箱"]
+    LLMAdapters[LLM 适配层与降级链]
+    Memory[SharedMemory 管理器]
+    Governance[治理 / 审批模块]
+    Observability[工具调用记录 / 统计 / 跟踪]
+    MultiAgent[多 agent 系统]
+  end
+
+  subgraph 模型[外部与本地模型]
+    DeepSeek[DeepSeek API]
+    Gemini[Gemini / OpenAI]
+    Ollama[Ollama (本地)]
+  end
+
+  UI -->|SSE / REST| API
+  仪表盘 -->|轮询 / REST| API
+  API --> AgentRunner
+  API --> Planner
+  AgentRunner --> MultiAgent
+  Planner --> AgentRunner
+  AgentRunner --> LLMAdapters
+  LLMAdapters --> 模型
+  AgentRunner --> Tools
+  Tools --> Memory
+  API --> Observability
+  AgentRunner --> Observability
+  API --> Governance
+  Governance --> Tools
+  Observability -->|日志 / jsonl| 存储[(logs/ stats/ jsonl 文件)]
+  Memory -->|持久化| 存储
+  Tools -->|文件 / git 操作| 存储
+  MultiAgent --> AgentRunner
+
+  classDef infra fill:#f9f,stroke:#333,stroke-width:1;
+  class 模型 infra
+  class 存储 infra
+`,
+
+      zh_detail: `flowchart LR
+  subgraph 前端[Next.js 前端]
+    UI[聊天页 / 模型选择 / 工具面板]
+    仪表盘[Agent 运维面板]
+  end
+
+  subgraph 后端[FastAPI 后端]
+    API["/api/* 路由<br/>(chat, plan, agents, stats, memory)"]
+    AgentRunner[Agent 运行器 / 协调器]
+    Planner[Plan / 自动驾驶（Autopilot）]
+    Tools["工具注册表（17 个工具）<br/>文件 / Git / Web / Memory / 沙箱"]
+    LLMAdapters[LLM 适配层与降级链]
+    Memory[SharedMemory 管理器]
+    Governance[治理 / 审批模块]
+    Observability[工具调用记录 / 统计 / 跟踪]
+    MultiAgent[多 agent 系统]
+  end
+
+  subgraph 模型[外部与本地模型]
+    DeepSeek[DeepSeek API]
+    Gemini[Gemini / OpenAI]
+    Ollama[Ollama (本地)]
+  end
+
+  subgraph 计划[计划拆解示例]
+    目标["用户目标:<br/>\"构建登录系统\""]
+    目标 --> 步骤1["步骤1：调研<br/>(模型：deepseek-v4-flash)"]
+    目标 --> 步骤2["步骤2：实现<br/>(模型：gemini-2.5-flash)"]
+    目标 --> 步骤3["步骤3：测试与验证<br/>(模型：ollama/qwen2.5)"]
+  end
+
+  步骤1 -->|分配给| 研究Agent[agent: research]
+  步骤2 -->|分配给| 开发Agent[agent: coding]
+  步骤3 -->|分配给| 测试Agent[agent: testing]
+
+  UI -->|SSE / REST| API
+  API --> AgentRunner
+  AgentRunner --> MultiAgent
+  Planner --> AgentRunner
+  AgentRunner --> LLMAdapters
+  步骤1 --> LLMAdapters
+  步骤2 --> LLMAdapters
+  步骤3 --> LLMAdapters
+  LLMAdapters --> DeepSeek
+  LLMAdapters --> Gemini
+  LLMAdapters --> Ollama
+
+  classDef infra fill:#f9f,stroke:#333,stroke-width:1;
+  class 模型 infra
+  class 存储 infra
+`,
+    };
+
+    let current = 'en';
+    let detail = false;
+    const diagramEl = document.getElementById('diagram');
+    const btnEn = document.getElementById('btn-en');
+    const btnZh = document.getElementById('btn-zh');
+    const btnDownload = document.getElementById('btn-download-svg');
+    const btnRender = document.getElementById('btn-render');
+
+    async function renderCurrent(){
+      const key = current + (detail ? '_detail' : '');
+      const code = diagrams[key] || diagrams[current];
+      diagramEl.innerHTML = 'Rendering...';
+      try{
+        const result = await mermaid.render('mermaid-svg', code);
+        const svg = typeof result === 'string' ? result : (result.svg || String(result));
+        diagramEl.innerHTML = svg;
+        btnDownload.disabled = false;
+      }catch(err){
+        diagramEl.innerHTML = '<pre style="color:red">'+String(err)+'</pre>';
+        btnDownload.disabled = true;
+      }
+    }
+
+    const btnToggle = document.getElementById('btn-toggle-detail');
+    btnToggle.addEventListener('click', ()=>{ detail = !detail; btnToggle.textContent = detail ? 'Hide Detail' : 'Toggle Detail'; renderCurrent(); });
+
+    function downloadSVG(){
+      const svgEl = diagramEl.querySelector('svg');
+      if(!svgEl) return alert('No SVG found');
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svgEl);
+      // add xml declaration
+      if(!source.match(/^<\?xml/)) source = '<?xml version="1.0" standalone="no"?>\n' + source;
+      const blob = new Blob([source], {type: 'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `architecture_${current}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    btnEn.addEventListener('click', ()=>{ current='en'; renderCurrent(); });
+    btnZh.addEventListener('click', ()=>{ current='zh'; renderCurrent(); });
+    btnDownload.addEventListener('click', downloadSVG);
+    btnRender.addEventListener('click', renderCurrent);
+
+    // initial render
+    renderCurrent();
+  </script>
+</body>
+</html>
