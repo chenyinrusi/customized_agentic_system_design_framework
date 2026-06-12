@@ -187,3 +187,5 @@
 感谢 DeepSeek，也是因为这个价格亲民，所以我才能开发出来这个项目，我觉得我们这个时代的人都要感谢 DeepSeek 的老板，梁文锋，没有他，是他守住了普通人在这个时代的 AI 使用权，没有他，哪来的 AI 平权。
 
 最后的最后，其实我一点也不想感谢 Claude，它又贵，还有个 5 小时使用的 cap，太烦人了，不过有些时候，用别的模型解决不了的 bug，还真能被它给解决了，我的建议是，Claude 做设计和攻坚，平常开发还是用 DeepSeek，毕竟 1 块钱买个 80 分的产品，或是 100 块钱买个 90 分的产品，对于众多价格敏感型消费者来说，还是 DeepSeek 会更好一些。
+
+本项目的视频介绍和计划分解演示可在 YouTube 上观看：[Customized Agentic System - Plan Decompose & Thanks（播放列表）](https://www.youtube.com/playlist?list=PLblsECFOUwOnwiZwgud0mXUf_diDoqRpe)。

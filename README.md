@@ -22,6 +22,10 @@ Most AI developer tools are either a single black-box assistant or a loose toolk
 - `architecture_zh.md` — 中文版本，包含相同结构与任务拆解示例。
 - `architecture_interactive.html` — 可交互 HTML 页面，支持中英文切换、详细拆解视图和 SVG 导出。
 
+## Videos
+
+- [Customized Agentic System - Plan Decompose & Thanks (Playlist)](https://www.youtube.com/playlist?list=PLblsECFOUwOnwiZwgud0mXUf_diDoqRpe) — 项目介绍与计划分解演示视频，包含架构讲解与致谢。
+
 ## Core Ideas
 
 - **Multi-agent by default** — specialized agents (Planner, Coder, Researcher, Tester, Reviewer, Memory) work in parallel

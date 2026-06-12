@@ -187,3 +187,5 @@ Thanks to Andrej Karpathy for the LLM Wiki – my memory system was inspired by 
 Thanks to DeepSeek as well. Because of its affordable pricing, I was able to build this project in the first place. I believe people in our era should thank DeepSeek’s founder, Liang Wenfeng. He has preserved access to AI for ordinary users, and without him, there would be no AI equity for the public.
 
 Finally, I actually do not want to thank Claude. It is expensive and has a frustrating 5-hour usage cap. But sometimes when no other model can solve a bug, Claude can. My suggestion is to use Claude for design and hard problems, while using DeepSeek for regular development. After all, buying an 80-point product for $1 or a 90-point product for $100， cost over performance is a much better choice for cost-sensitive consumers, and DeepSeek is likely the better option for them.
+
+A video walkthrough of this project is available on YouTube: [Customized Agentic System - Plan Decompose & Thanks](https://www.youtube.com/playlist?list=PLblsECFOUwOnwiZwgud0mXUf_diDoqRpe).
