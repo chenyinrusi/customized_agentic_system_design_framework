@@ -178,6 +178,60 @@ The value is in the design pattern, not the code itself.
 
 ---
 
+
+## 6. Evolution Since June 2026
+
+The reference implementation has grown significantly since this framework was first published. The design philosophy and core architecture layers remain unchanged, but the system's scale and capability set have expanded.
+
+### Growth in Numbers
+
+| Dimension | June 2026 | July 2026 |
+|-----------|-----------|-----------|
+| Agent roles | 6 | **27** |
+| Built-in tools | 17 | **47 (12 categories)** |
+| Source modules | ~15 | **36+** |
+| Unit tests | ~3000 | **9823 (0 failed, 0 flaky)** |
+| Test coverage | ~55% | **80%** (~170 files at 100%) |
+| CI gates | Basic | **Ruff 0 · Mypy 0 · tsc 0** |
+| E2E tests | None | **Playwright 148+ specs** |
+| Design documents | 2 | **12, all implemented** |
+
+### New Modules Since June 2026
+
+| Module | Description |
+|--------|-------------|
+| **src/harness** (DD-49) | Autonomous Loop Harness — background goal queue polling, plan checkpoint/resume |
+| **src/eval** (DD-43) | EvalGate — LLM-as-Judge quality evaluation gate |
+| **src/debate** (DD-47) | Multi-Agent Debate — multiple agents debate problems and converge on optimal answers |
+| **src/self_edit** (DD-46) | Self-Edit Loop — agents audit and refine their own code and prompts |
+| **src/skills** (DD-23) | Skill Registry — pluggable skill system for agent capabilities |
+| **src/code_graph** | Multi-language code knowledge graph for cross-project understanding |
+| **src/autoresearch** | Automated research pipeline with iterative refinement |
+| **src/ingestion** | Document ingestion pipeline (PDF / DOCX / PPTX / XLSX / image / URL) |
+| **src/venture** | Venture Architect — business discovery pipeline |
+| **src/testing** | E2E frontend browser testing agent infrastructure |
+| **src/notifications** | HumanNotifier — operator alerts and escalation |
+| **src/maintenance** | Scheduled maintenance tasks |
+| **src/auth** | SessionContext — authentication context |
+| **src/config** | Operational configuration management |
+| **src/approval** | Human-in-the-loop approval workflows |
+| **src/audit** | StateTransitionEvent/Log — unified audit trail |
+| **integrations/channels** | Email bot & Feishu/Lark bot channels |
+| **MCP Tool Integration** (W6-4.1) | Model Context Protocol tools injected at runtime |
+
+### What Stayed the Same
+
+The six-layer architecture (Orchestration → Reasoning → Execution → Governance → Observability → Memory) has proven durable. Every new module fits into one of these layers. No layer was split or removed. The governance-first principle, the role-based agent model, and the observable-by-design approach all remain as originally designed.
+
+### What Changed
+
+- **Tools**: 17 → 47. The original categories (file, git, web, memory, sandbox) were extended with browser automation, email, calendar, kanban, knowledge search, document ingestion, MCP tools, and agent diagnostic introspection.
+- **Roles**: 6 → 27. The original Planner/Coding/Research/Testing/Review/Memory roles were joined by 21 specialized roles including Coordinator, DevOps, Security, Architect, Documentation, Data Engineer, and more.
+- **Self-governance**: CONSTITUTION.md (DD-48) with 9 immutable invariants was added — agents cannot disable injection scanning, audit logging, or lower the EvalGate quality floor.
+- **Resilience**: 4-level API key fallback chain (env → registry → .env → dotenv), plus CostRouter for automatic provider selection.
+- **Quality infrastructure**: Three-tier test pyramid (L1 smoke / L2 API contract / L3 semantic validation), E2E Playwright suite, and full CI automation.
+
+
 ## Acknowledgements
 
 Thanks to Hunter Baun for creating Deepseek TUI. It removed the brakes on my development process and let me build this product quickly without worrying too much about cost. 

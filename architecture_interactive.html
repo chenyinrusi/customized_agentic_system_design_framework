@@ -41,24 +41,30 @@
       en: `flowchart LR
   subgraph Frontend[Next.js Frontend]
     UI[Chat Page / Model Selector / Toolbox]
-    AgentWorkspace[Agent Dashboard]
+    AgentWorkspace[Agent Dashboard / Kanban / Wiki / Stats / Venture]
   end
 
   subgraph Backend[FastAPI Backend]
     API["/api/* endpoints<br/>(chat, plan, agents, stats, memory)"]
     AgentRunner[Agent Runner / Orchestrator]
     Planner[Plan / Autopilot]
-    Tools["Tool Registry (17 tools)<br/>File / Git / Web / Memory / Sandbox"]
-    LLMAdapters[LLM Adapters & Fallback]
-    Memory[SharedMemoryManager]
-    Governance[Governor / Approval]
-    Observability[ToolCallLogger / StatsTracker / Tracer]
-    MultiAgent[MultiAgentSystem]
+    Tools["Tool Registry (47 tools, 12 categories)<br/>File / Git / Web / Browser / Shell / Memory<br/>Knowledge / Search / Kanban / Email / Calendar<br/>Ingestion / MCP / Agent Doctor"]
+    LLMAdapters[LLM Adapters & 4-level Fallback Chain]
+    Memory[Shared / Episodic / FIFO Manager]
+    Governance[Governor / RBAC / Rate Limit / Injection Scan]
+    Audit[Audit Log / StateTransitionEvent]
+    Constitution[Constitution / 9 immutable invariants]
+    Observability[StatsTracker / Tracer / EndpointTracker]
+    MultiAgent[MultiAgentSystem / Debate / Dispatch]
+    Harness[Loop Harness<br/>Goal Queue / Checkpoint]
+    EvalGate[EvalGate<br/>LLM-as-Judge]
+    Skills[Skill Registry]
+    Channels[Email / Feishu Bot]
   end
 
   subgraph Providers[External & Local Models]
-    DeepSeek[DeepSeek API]
-    Gemini[Gemini / OpenAI]
+    DeepSeek[DeepSeek V4 API]
+    Gemini[Gemini 2.5 / OpenAI GPT]
     Ollama["Ollama (local)"]
   end
 
@@ -72,14 +78,22 @@
   LLMAdapters --> Providers
   AgentRunner --> Tools
   Tools --> Memory
+  Tools --> Governance
+  Governance --> Audit
   API --> Observability
   AgentRunner --> Observability
   API --> Governance
   Governance --> Tools
+  AgentRunner --> EvalGate
+  AgentRunner --> Constitution
+  AgentRunner --> Skills
+  AgentRunner --> Harness
+  Harness --> Planner
   Observability -->|logs/jsonl| Storage[(logs/ stats/ jsonl files)]
   Memory -->|persist| Storage
   Tools -->|file/git ops| Storage
   MultiAgent --> AgentRunner
+  Channels --> API
 
   classDef infra fill:#f9f,stroke:#333,stroke-width:1;
   class Providers infra
@@ -89,29 +103,35 @@
       en_detail: `flowchart LR
   subgraph Frontend[Next.js Frontend]
     UI[Chat Page / Model Selector / Toolbox]
-    AgentWorkspace[Agent Dashboard]
+    AgentWorkspace[Agent Dashboard / Kanban / Wiki / Stats / Venture]
   end
 
   subgraph Backend[FastAPI Backend]
     API["/api/* endpoints<br/>(chat, plan, agents, stats, memory)"]
     AgentRunner[Agent Runner / Orchestrator]
     Planner[Plan / Autopilot]
-    Tools["Tool Registry (17 tools)<br/>File / Git / Web / Memory / Sandbox"]
-    LLMAdapters[LLM Adapters & Fallback]
-    Memory[SharedMemoryManager]
-    Governance[Governor / Approval]
-    Observability[ToolCallLogger / StatsTracker / Tracer]
-    MultiAgent[MultiAgentSystem]
+    Tools["Tool Registry (47 tools, 12 categories)<br/>File / Git / Web / Browser / Shell / Memory<br/>Knowledge / Search / Kanban / Email / Calendar<br/>Ingestion / MCP / Agent Doctor"]
+    LLMAdapters[LLM Adapters & 4-level Fallback Chain]
+    Memory[Shared / Episodic / FIFO Manager]
+    Governance[Governor / RBAC / Rate Limit / Injection Scan]
+    Audit[Audit Log / StateTransitionEvent]
+    Constitution[Constitution / 9 immutable invariants]
+    Observability[StatsTracker / Tracer / EndpointTracker]
+    MultiAgent[MultiAgentSystem / Debate / Dispatch]
+    Harness[Loop Harness<br/>Goal Queue / Checkpoint]
+    EvalGate[EvalGate<br/>LLM-as-Judge]
+    Skills[Skill Registry]
+    Channels[Email / Feishu Bot]
   end
 
   subgraph Providers[External & Local Models]
-    DeepSeek[DeepSeek API]
-    Gemini[Gemini / OpenAI]
+    DeepSeek[DeepSeek V4 API]
+    Gemini[Gemini 2.5 / OpenAI GPT]
     Ollama["Ollama (local)"]
   end
 
   subgraph Plan[Plan Decomposition]
-    Goal["User Goal:<br/>\"Build login system\""]
+    Goal["User Goal:<br/>\\"Build login system\\""]
     Goal --> Step1["Step 1: Research<br/>(model: deepseek-v4-flash)"]
     Goal --> Step2["Step 2: Implement<br/>(model: gemini-2.5-flash)"]
     Goal --> Step3["Step 3: Test & Verify<br/>(model: ollama/qwen2.5)"]
@@ -144,24 +164,30 @@
       zh: `flowchart LR
   subgraph 前端[Next.js 前端]
     UI[聊天页 / 模型选择 / 工具面板]
-    仪表盘[Agent 运维面板]
+    仪表盘[运维面板 / 看板 / Wiki / 统计 / Venture]
   end
 
   subgraph 后端[FastAPI 后端]
     API["/api/* 路由<br/>(chat, plan, agents, stats, memory)"]
     AgentRunner[Agent 运行器 / 协调器]
-    Planner[Plan / 自动驾驶（Autopilot）]
-    Tools["工具注册表（17 个工具）<br/>文件 / Git / Web / Memory / 沙箱"]
-    LLMAdapters[LLM 适配层与降级链]
-    Memory[SharedMemory 管理器]
-    Governance[治理 / 审批模块]
-    Observability[工具调用记录 / 统计 / 跟踪]
-    MultiAgent[多 agent 系统]
+    Planner[Plan / 自动排程]
+    Tools["工具注册表（47 个工具，12 大类）<br/>文件 / Git / Web / 浏览器 / Shell / 记忆<br/>知识 / 搜索 / 看板 / 邮件 / 日历<br/>文档导入 / MCP / Agent 诊断"]
+    LLMAdapters[LLM 适配层与 4 级降级链]
+    Memory[共享 / 情景 / FIFO 管理器]
+    Governance[治理层 / RBAC / 速率限制 / 注入扫描]
+    Audit[审计日志 / 状态迁移事件]
+    Constitution[Constitution / 9 条不可变规则]
+    Observability[统计追踪 / 链路追踪 / 端点追踪]
+    MultiAgent[多 Agent 调度 / 辩论 / 分发]
+    Harness[自治循环驱动<br/>Goal Queue / 检查点]
+    EvalGate[EvalGate<br/>LLM 评判质量门]
+    Skills[Skill 注册系统]
+    Channels[邮件 / 飞书机器人]
   end
 
   subgraph 模型[外部与本地模型]
-    DeepSeek[DeepSeek API]
-    Gemini[Gemini / OpenAI]
+    DeepSeek[DeepSeek V4 API]
+    Gemini[Gemini 2.5 / OpenAI GPT]
     Ollama["Ollama (本地)"]
   end
 
@@ -175,14 +201,22 @@
   LLMAdapters --> 模型
   AgentRunner --> Tools
   Tools --> Memory
+  Tools --> Governance
+  Governance --> Audit
   API --> Observability
   AgentRunner --> Observability
   API --> Governance
   Governance --> Tools
+  AgentRunner --> EvalGate
+  AgentRunner --> Constitution
+  AgentRunner --> Skills
+  AgentRunner --> Harness
+  Harness --> Planner
   Observability -->|日志 / jsonl| 存储[(logs/ stats/ jsonl 文件)]
   Memory -->|持久化| 存储
   Tools -->|文件 / git 操作| 存储
   MultiAgent --> AgentRunner
+  Channels --> API
 
   classDef infra fill:#f9f,stroke:#333,stroke-width:1;
   class 模型 infra
@@ -192,29 +226,35 @@
       zh_detail: `flowchart LR
   subgraph 前端[Next.js 前端]
     UI[聊天页 / 模型选择 / 工具面板]
-    仪表盘[Agent 运维面板]
+    仪表盘[运维面板 / 看板 / Wiki / 统计 / Venture]
   end
 
   subgraph 后端[FastAPI 后端]
     API["/api/* 路由<br/>(chat, plan, agents, stats, memory)"]
     AgentRunner[Agent 运行器 / 协调器]
-    Planner[Plan / 自动驾驶（Autopilot）]
-    Tools["工具注册表（17 个工具）<br/>文件 / Git / Web / Memory / 沙箱"]
-    LLMAdapters[LLM 适配层与降级链]
-    Memory[SharedMemory 管理器]
-    Governance[治理 / 审批模块]
-    Observability[工具调用记录 / 统计 / 跟踪]
-    MultiAgent[多 agent 系统]
+    Planner[Plan / 自动排程]
+    Tools["工具注册表（47 个工具，12 大类）<br/>文件 / Git / Web / 浏览器 / Shell / 记忆<br/>知识 / 搜索 / 看板 / 邮件 / 日历<br/>文档导入 / MCP / Agent 诊断"]
+    LLMAdapters[LLM 适配层与 4 级降级链]
+    Memory[共享 / 情景 / FIFO 管理器]
+    Governance[治理层 / RBAC / 速率限制 / 注入扫描]
+    Audit[审计日志 / 状态迁移事件]
+    Constitution[Constitution / 9 条不可变规则]
+    Observability[统计追踪 / 链路追踪 / 端点追踪]
+    MultiAgent[多 Agent 调度 / 辩论 / 分发]
+    Harness[自治循环驱动<br/>Goal Queue / 检查点]
+    EvalGate[EvalGate<br/>LLM 评判质量门]
+    Skills[Skill 注册系统]
+    Channels[邮件 / 飞书机器人]
   end
 
   subgraph 模型[外部与本地模型]
-    DeepSeek[DeepSeek API]
-    Gemini[Gemini / OpenAI]
+    DeepSeek[DeepSeek V4 API]
+    Gemini[Gemini 2.5 / OpenAI GPT]
     Ollama["Ollama (本地)"]
   end
 
   subgraph 计划[计划拆解示例]
-    目标["用户目标:<br/>\"构建登录系统\""]
+    目标["用户目标:<br/>\\"构建登录系统\\""]
     目标 --> 步骤1["步骤1：调研<br/>(模型：deepseek-v4-flash)"]
     目标 --> 步骤2["步骤2：实现<br/>(模型：gemini-2.5-flash)"]
     目标 --> 步骤3["步骤3：测试与验证<br/>(模型：ollama/qwen2.5)"]

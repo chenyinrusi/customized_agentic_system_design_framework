@@ -178,6 +178,60 @@
 
 ---
 
+
+## 7. 2026 年 6 月以来的演进
+
+参考实现（Customized Agentic System）自本设计框架首次发布以来，规模和能力都有了显著增长。设计理念和核心架构层次保持不变，但系统的规模和功能集已经大幅扩展。
+
+### 数据增长
+
+| 维度 | 2026 年 6 月 | 2026 年 7 月 |
+|-----------|-----------|-----------|
+| Agent 角色数 | 6 | **27** |
+| 内置工具数 | 17 | **47（12 大类）** |
+| 源码模块数 | ~15 | **36+** |
+| 单元测试数 | ~3000 | **9823（0 失败/0 flaky）** |
+| 测试覆盖率 | ~55% | **80%（~170 文件 100%）** |
+| CI 门禁 | 基础 | **Ruff 0 · Mypy 0 · tsc 0** |
+| E2E 测试 | 无 | **Playwright 148+ specs** |
+| 设计文档 | 2 | **12 份，全部落地** |
+
+### 6 月以来新增的模块
+
+| 模块 | 说明 |
+|--------|-------------|
+| **src/harness** (DD-49) | 自治循环驱动 — 后台 Goal Queue 轮询、计划断点续传 |
+| **src/eval** (DD-43) | EvalGate — LLM 作为评判者的质量评估门 |
+| **src/debate** (DD-47) | 多 Agent 辩论 — 多个 Agent 对同一问题辩论，收敛到最优解 |
+| **src/self_edit** (DD-46) | 自编辑循环 — Agent 审计和改进自己的代码与提示词 |
+| **src/skills** (DD-23) | Skill 注册系统 — 可插拔的 Agent 能力 |
+| **src/code_graph** | 多语言代码知识图谱，跨项目理解 |
+| **src/autoresearch** | 自动研究管道，迭代优化 |
+| **src/ingestion** | 文档导入管道（PDF / DOCX / PPTX / XLSX / 图片 / URL） |
+| **src/venture** | Venture Architect — 商业发现管道 |
+| **src/testing** | E2E 前端浏览器测试 Agent 基础设施 |
+| **src/notifications** | HumanNotifier — 操作者告警和升级 |
+| **src/maintenance** | 计划维护任务 |
+| **src/auth** | SessionContext — 认证上下文 |
+| **src/config** | 运营配置管理 |
+| **src/approval** | Human-in-the-loop 审批工作流 |
+| **src/audit** | StateTransitionEvent/Log — 统一审计追踪 |
+| **integrations/channels** | 邮件机器人 & 飞书机器人渠道 |
+| **MCP 工具集成** (W6-4.1) | 运行时注入 MCP（Model Context Protocol）工具 |
+
+### 哪些没变
+
+六层架构（编排 → 推理 → 执行 → 治理 → 可观测 → 记忆）被证明是稳固的。每个新模块都能归入其中一层，没有任何一层被拆分或移除。治理优先原则、基于角色的 Agent 模型、以及"设计时就考虑可观测"的方法都保持原状。
+
+### 哪些变了
+
+- **工具**：17 → 47。原始类别（文件、Git、Web、记忆、沙箱）扩展了浏览器自动化、邮件、日历、看板、知识搜索、文档导入、MCP 工具和 Agent 自省诊断。
+- **角色**：6 → 27。原始的 Planner/Coding/Research/Testing/Review/Memory 增加了 21 个专门角色，包括 Coordinator、DevOps、Security、Architect、Documentation、Data Engineer 等。
+- **自治理**：新增 CONSTITUTION.md（DD-48），定义 9 条不可变规则 — Agent 不能禁用注入扫描、审计日志或降低 EvalGate 质量门槛。
+- **容错**：4 级 API Key 回退链（env → registry → .env → dotenv），加上 CostRouter 自动选择 Provider。
+- **质量基础设施**：三层测试金字塔（L1 烟雾 / L2 API 契约 / L3 语义验证）、E2E Playwright 套件、全 CI 自动化。
+
+
 ## 致谢
 
 感谢 Hunter Baun 创作的 Deepseek TUI，着实打消了我在开发上面的节制，让我能不担心 cost 的情况下迅速开发做出这个产品。

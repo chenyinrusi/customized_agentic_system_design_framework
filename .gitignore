@@ -18,3 +18,15 @@ Desktop.ini
 # Windows
 ehthumbs.db
 $RECYCLE.BIN/
+
+# Local credential scripts (DO NOT COMMIT)
+_check_mail.py
+_check_github.py
+_check_github_actions.py
+_check_push.py
+_read_creds.py
+_read_all_creds.py
+_read_github_cred.py
+
+# Local tooling config
+.deepseek/
