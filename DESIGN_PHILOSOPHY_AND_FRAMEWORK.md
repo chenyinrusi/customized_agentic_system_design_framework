@@ -58,7 +58,9 @@ The architecture is organized into a small number of clearly separated layers:
 
 ### 2.2 Agent roles
 
-The system is built around specialized agents instead of a single general-purpose assistant:
+The system is built around specialized agents instead of a single general-purpose assistant. **As of July 2026, the reference implementation has 27 agent roles** (up from the original 6).
+
+The six foundational roles are:
 
 - **Planner**: decomposes goals into steps, selects models, and assigns work.
 - **Coding**: writes implementation code and production artifacts.
@@ -67,9 +69,19 @@ The system is built around specialized agents instead of a single general-purpos
 - **Review**: audits code quality, security, and best practices.
 - **Memory**: captures decisions, constraints, and historical context.
 
-Each role is designed to have a separate responsibility and can run in parallel with others.
+The remaining 21 roles cover specialized domains:
+
+- **Coordination**: Coordinator, Orchestrator — task routing and dependency management.
+- **Infrastructure**: DevOps, Security, Architect — infrastructure, security hardening, and system design.
+- **Quality**: Documentation, Data Engineer, Browser — documentation, data pipelines, and web automation.
+- **Operations**: Maintenance, Observability, Governance — upkeep, monitoring, and policy enforcement.
+- **Domain-specific**: Kanban, Knowledge, Debate, Skills, Venture, Configuration, Sandbox, Channel (Email/Feishu).
+
+Each role is designed to have a separate responsibility and can run in parallel with others. Agents are defined via the `AgentRole` dataclass with role-specific system prompts, tool permissions, LLM presets, and communication topics. A Role Builder allows dynamic creation of new roles at runtime.
 
 A key principle is that LLM Mode is a smaller-grained decision than an agent. That means a complex task step can use a higher-end mode while simpler steps use a cheaper mode, and a single project can route different data or steps to different modes to avoid exposing the whole idea to one provider.
+
+For the full role list and evolution, see [§6. Evolution Since June 2026](#6-evolution-since-june-2026).
 
 ### 2.3 Multi-agent orchestration model
 

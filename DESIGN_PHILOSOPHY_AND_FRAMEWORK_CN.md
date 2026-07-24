@@ -58,7 +58,9 @@
 
 ### 2.2 Agent 角色划分
 
-系统围绕专门化角色设计，而不是一个通用助手：
+系统围绕专门化角色设计，而不是一个通用助手。**截至 2026 年 7 月，参考实现共有 27 个 Agent 角色**（原始设计为 6 个）。
+
+六个基础角色：
 
 - **Planning Agent**：分解目标、选择模型、编排任务。
 - **Coding Agent**：编写代码、生成实现。
@@ -67,9 +69,19 @@
 - **Review Agent**：审查代码质量、安全性和最佳实践。
 - **Memory Agent**：记录项目决策、约束和历史上下文。
 
-每个角色承担独立责任，并可并行运行。
+其余 21 个角色覆盖专门领域：
+
+- **协调类**：Coordinator、Orchestrator — 任务路由与依赖管理。
+- **基础设施**：DevOps、Security、Architect — 基础设施、安全加固、系统设计。
+- **质量类**：Documentation、Data Engineer、Browser — 文档、数据管道、Web 自动化。
+- **运维类**：Maintenance、Observability、Governance — 维护、监控、策略执行。
+- **领域专属**：Kanban、Knowledge、Debate、Skills、Venture、Configuration、Sandbox、Channel（邮件/飞书）。
+
+每个角色承担独立责任，并可并行运行。Agent 通过 `AgentRole` 数据类定义，包含角色专属系统提示、工具权限、LLM 预设和通信主题。Role Builder 支持在运行时动态创建新角色。
 
 一个关键原则是：LLM Mode 的粒度要比 Agent 更小。这意味着可以把复杂步骤交给更贵、更强的 Mode，把简单步骤交给更便宜的 Mode；也可以把数据和任务拆分给不同的 Mode，让单一 AI 公司不会看到整个项目、数据或想法。
+
+完整角色列表和演进细节参见 [§7. 2026 年 6 月以来的演进](#7-2026-年-6-月以来的演进)。
 
 ### 2.3 多 Agent 编排模型
 
