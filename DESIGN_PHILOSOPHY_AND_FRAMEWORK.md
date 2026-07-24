@@ -89,11 +89,15 @@ For the full role list and evolution, see [§6. Evolution Since June 2026](#6-ev
 - Dependencies are resolved so work can proceed in parallel when safe.
 - Agents can exchange findings through a lightweight message bus and shared memory.
 - A synthesis step aggregates results and ensures consistency.
+- **Multi-Agent Debate (DD-47)**: multiple agents independently analyze a problem, then compare and converge on the optimal solution.
+- **Dispatch patterns**: the system supports Orchestrator-led dispatch (one coordinator routes work) and autonomous dispatch (agents self-select tasks from a shared goal queue).
 
 ### 2.4 Governance and safety principles
 
 - **Prevent before permit**: risky operations are blocked until explicitly approved.
-- **Role-aware permissions**: different agent roles and user roles have different capabilities.
+- **Role-aware permissions**: different agent roles and user roles have different capabilities (RBAC).
+- **Injection and rate protection**: every tool call is scanned for dangerous patterns (path traversal, shell injection) and rate-limited per agent role.
+- **Constitutional invariants (DD-48)**: a CONSTITUTION.md defines 9 immutable rules — including that agents cannot disable injection scanning, audit logging, or lower the quality evaluation floor. No agent prompt or self-edit may override these.
 - **Budget awareness**: model selection is influenced by cost budgets and usage thresholds.
 - **Audit-first**: every operation is recorded with context, outcome, and approval state.
 
@@ -107,7 +111,7 @@ For the full role list and evolution, see [§6. Evolution Since June 2026](#6-ev
 ### 2.6 Memory and continuity
 
 - Project memory stores decisions, constraints, architecture notes, and risks.
-- Memory is structured rather than raw chat history.
+- Memory is structured rather than raw chat history, organized into three types: **Shared** (cross-agent persistent store), **Episodic** (session-scoped interaction records), and **FIFO** (rolling window of recent context).
 - The system automatically injects relevant memory into future agent prompts.
 - Aging, deduplication, and compression keep memory useful and small.
 
@@ -167,6 +171,10 @@ This creates a more resilient and reliable user experience.
 The product is built with the assumption that users should always know what happened and why.
 That is the core difference between an experimental tool and a trusted engineering platform.
 
+### 4.6 Constitutional self-governance
+
+The system enforces immutable invariants that no agent can override. A CONSTITUTION.md defines the boundaries of self-modification, preventing agents from disabling security controls, audit logging, or quality gates. This is a foundational safety mechanism for autonomous operation: the system can change its own code but cannot change its own constraints.
+
 ## 5. How to describe it without code
 
 If you want to express this idea without sharing implementation details, frame it as:
@@ -175,6 +183,7 @@ If you want to express this idea without sharing implementation details, frame i
 - "A governance-first AI system" rather than "a set of libraries".
 - "A project memory engine" rather than "a source-controlled database".
 - "A cost-aware model router" rather than "provider fallback tables".
+- "A constitutional self-governing system" rather than "a configuration file with constraints".
 
 The value is in the design pattern, not the code itself.
 
